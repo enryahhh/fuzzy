@@ -1,3 +1,24 @@
+<?php
+require 'vendor/autoload.php';
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+if(isset($_POST["random"])){
+    $spreadsheet = IOFactory::load('abalone.csv');
+$worksheet = $spreadsheet->getActiveSheet();
+$highestRow = ($worksheet->getHighestRow() > 51) ? 51 : $worksheet->getHighestRow();
+$randomRows = array_rand(range(2, 51), 1);
+// for ($row = 2; $row <= $highestRow; $row++) {
+    $length = $worksheet->getCell('A' . $randomRows)->getValue();
+    $diameter = $worksheet->getCell('B' . $randomRows)->getValue();
+    $height = $worksheet->getCell('C' . $randomRows)->getValue();
+//     echo "cell A : ".$cellValueA."";
+//   }
+}
+
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -15,20 +36,24 @@
                         Fuzzy (Klasifikasi Gender Abalone)
                     </div>
                     <div class="card-body">
+                    <form method="POST" action="index.php" class="float-right">
+                                <button type="submit" name="random" class="btn btn-primary">Random</button>
+                            </form>
+
                         <form action="FuzzyController.php" method="POST">
                             <div class="mb-3 form-group">
                                 <label for="exampleFormControlInput1" class="form-label">Masukan Length</label>
-                                <input type="number" class="form-control" name="length" id="exampleFormControlInput1">
+                                <input type="number" class="form-control" value="<?= $length ?>" name="length" id="exampleFormControlInput1">
                             </div>
 
                             <div class="mb-3 form-group">
                                 <label for="diameter" class="form-label">Masukan Diameter</label>
-                                <input type="number" class="form-control" id="diameter" name="diameter">
+                                <input type="number" class="form-control" value="<?= $diameter ?>" id="diameter" name="diameter">
                             </div>
 
                             <div class="mb-3 form-group">
                                 <label for="tinggi" class="form-label">Masukan tinggi</label>
-                                <input type="number" class="form-control" id="tinggi" name="height">
+                                <input type="number" class="form-control" value="<?= $height ?>" id="tinggi" name="height">
                             </div>
 
                             <button type="submit" name="prediksi" class="btn btn-primary">Prediksi</button>

@@ -6,7 +6,7 @@ class Fuzzy {
     private $diameter;
     private $height;
     private $membership;
-
+    private $matchingRules;
     // public function __construct($membership){
     //     $this->membership = $membership;
     // }
@@ -41,23 +41,6 @@ class Fuzzy {
         $a = 0.2;
         $b = 0.4;
         $c = 0.6;
-        // pendek
-        // $pendek=0;
-        // $sedang=0;
-        // $panjang=0;
-
-        // if($input <= 0.2){
-        //     $pendek = 1;
-        // }else if(($input >=0.2) && ($input <=0.4)){
-        //     $pendek = (0.4 - $input) / (0.4 - 0.2); //itung rumus anu menurun
-        //     $sedang = ($input - 0.2) / (0.4 - 0.2);// itung rumus anu triangular
-        // }else if (($input >= 0.4) && ($input <= 0.6)){
-        //     $sedang = (0.6 - $input) / (0.6 - 0.4);// itung rumus anu triangular
-        //     $panjang = ($input - 0.4) / (0.6 - 0.4);// itung rumus anu menaik
-        // }else if($input >= 0.4){
-        //     $pendek = 0;
-        //     $panjang = 1;
-        // }
 
         $value = $this->membership($input,$a,$b,$c);
             // var_dump($value);
@@ -82,23 +65,6 @@ class Fuzzy {
 
     public function fuzzyfyHeight($input){
         $a = 0.1; $b = 0.15; $c = 0.2;
-        // $rendah=0;
-        // $sedang=0;
-        // $tinggi=0;
-
-        // if($input < 0.1){
-        //     $rendah = 1;
-        // }else if(($input >= 0.1) && ($input <= 0.15)){
-        //     $rendah = (0.1 - $input) / (0.15 - 0.1); //itung rumus anu menurun
-        //     $sedang = ($input - 0.1) / (0.15 - 0.1);// itung rumus anu triangular
-        // }
-        // else if (($input > 0.15) && ($input <= 0.2)){
-        //     $sedang = (0.6 - $input) / (0.6 - 0.4);// itung rumus anu triangular
-        //     $tinggi = ($input - 0.4) / (0.6 - 0.4);// itung rumus anu menaik
-        // }else if($input > 0.2){
-        //     $rendah = 0;
-        //     $tinggi = 1;
-        // }
         $value = $this->membership($input,$a,$b,$c);
         $this->height = [
             "rendah"=>$value[0],
@@ -234,35 +200,59 @@ class Fuzzy {
             }
         }
 
-        $output_values = array();
+        // $output_values = array();
         // var_dump($matching_rules);
         // $r1 = min($length,$diameter,$height);
         // Print the matching rules
-        var_dump($matching_rules);
-        echo "The matching rules are: \n <br>";
+        // var_dump($matching_rules);
+        // echo "The matching rules are: \n <br>";
+        // $rata2 = 0;
+        // $rata = 0;
+        // for ($i = 0; $i < count($matching_rules); $i++) {
+        //     $index = $matching_rules[$i]['rule_index'];
+        //     $degree = $matching_rules[$i]['matching_degree'];
+        //     $output = $matching_rules[$i]['output'];
+        //     $z = $matching_rules[$i]['z'];
+        //     if (!isset($output_values[$output])) {
+        //         $output_values[$output] = 0;
+        //     }
+        //     $rata2 += $degree*$z;
+        //     $rata += $degree;
+        //     $output_values[$output] += $degree;
+        //     echo "Rule " . ($index + 1) . " with matching degree of " . $degree . "\n - Z ".$z." <br>";
+        // }
+
+        // $hasil = $rata2 / $rata;
+        // $fuzzySex = $this->membership($hasil,0.3,0.5,0.7);
+        // $hasil = ["female"=>$fuzzySex[0],"male"=>$fuzzySex[1],"inter"=>$fuzzySex[2]];
+        // arsort($hasil);
+        // var_dump(array_key_first($hasil));
+        $this->matchingRules = $matching_rules;
+        return $this->matchingRules;
+    
+    }
+
+    public function deffuzy($matchingRules){
+        $output_values = array();
         $rata2 = 0;
         $rata = 0;
-        for ($i = 0; $i < count($matching_rules); $i++) {
-            $index = $matching_rules[$i]['rule_index'];
-            $degree = $matching_rules[$i]['matching_degree'];
-            $output = $matching_rules[$i]['output'];
-            $z = $matching_rules[$i]['z'];
-            if (!isset($output_values[$output])) {
-                $output_values[$output] = 0;
-            }
+        for ($i = 0; $i < count($matchingRules); $i++) {
+            $index = $matchingRules[$i]['rule_index'];
+            $degree = $matchingRules[$i]['matching_degree'];
+            $output = $matchingRules[$i]['output'];
+            $z = $matchingRules[$i]['z'];
+
             $rata2 += $degree*$z;
             $rata += $degree;
-            $output_values[$output] += $degree;
-            echo "Rule " . ($index + 1) . " with matching degree of " . $degree . "\n - Z ".$z." <br>";
         }
+        return $rata2 / $rata;
+    }
 
-        $hasil = $rata2 / $rata;
-        $fuzzySex = $this->membership($hasil,0.3,0.5,0.7);
+    public function fuzzyfyResult($deffuzy){
+        $fuzzySex = $this->membership($deffuzy,0.3,0.5,0.7);
         $hasil = ["female"=>$fuzzySex[0],"male"=>$fuzzySex[1],"inter"=>$fuzzySex[2]];
         arsort($hasil);
-        
-        var_dump(array_key_first($hasil));
-    
+        return array_key_first($hasil);
     }
 
 
