@@ -31,6 +31,12 @@ class Fuzzy {
         return $arr;
     }
 
+    public function calculateZ($input,$a,$b){
+        $z = $b-$input*($b-$a);
+        return $z;
+    }
+
+
     public function fuzzyfyLength($input){
         $a = 0.2;
         $b = 0.4;
@@ -214,23 +220,48 @@ class Fuzzy {
             );
 
             if ($weights > 0) {
+                if($arrRules[$i]['output']=='female' || $arrRules[$i]['output']=='male'){
+                    $z = $this->calculateZ($weights, 0.3,0.5);
+                }else{
+                    $z = $this->calculateZ($weights, 0.5,0.7);
+                }
                 $matching_rules[] = array(
                     'rule_index' => $i,
-                    'matching_degree' => $weights
+                    'matching_degree' => $weights,
+                    'output' => $arrRules[$i]['output'],
+                    'z' => $z
                 );
             }
         }
 
-        
-        var_dump($matching_rules);
+        $output_values = array();
+        // var_dump($matching_rules);
         // $r1 = min($length,$diameter,$height);
         // Print the matching rules
-        echo "The matching rules are: \n";
+        var_dump($matching_rules);
+        echo "The matching rules are: \n <br>";
+        $rata2 = 0;
+        $rata = 0;
         for ($i = 0; $i < count($matching_rules); $i++) {
             $index = $matching_rules[$i]['rule_index'];
             $degree = $matching_rules[$i]['matching_degree'];
-            echo "Rule " . ($index + 1) . " with matching degree of " . $degree . "\n";
+            $output = $matching_rules[$i]['output'];
+            $z = $matching_rules[$i]['z'];
+            if (!isset($output_values[$output])) {
+                $output_values[$output] = 0;
+            }
+            $rata2 += $degree*$z;
+            $rata += $degree;
+            $output_values[$output] += $degree;
+            echo "Rule " . ($index + 1) . " with matching degree of " . $degree . "\n - Z ".$z." <br>";
         }
+
+        $hasil = $rata2 / $rata;
+        $fuzzySex = $this->membership($hasil,0.3,0.5,0.7);
+        $hasil = ["female"=>$fuzzySex[0],"male"=>$fuzzySex[1],"inter"=>$fuzzySex[2]];
+        arsort($hasil);
+        
+        var_dump(array_key_first($hasil));
     
     }
 

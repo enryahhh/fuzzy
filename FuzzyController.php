@@ -19,15 +19,11 @@ error_reporting(E_ALL);
 class FuzzyController {
     public function test(){
         $fuzzy = new Fuzzy();
-        // $fuzzyLength = new Fuzzy(new Membership(0.2,0.4,0.6));
-        // $fuzzyDiameter = new Fuzzy(new Membership(0.2,0.4,0.6));
-        // $fuzzyHeight = new Fuzzy(new Membership(0.2,0.4,0.6));
         $membershipLength = $fuzzy->fuzzyfyLength(0.455);
         $membershipDiameter = $fuzzy->fuzzyfyDiameter(0.365);
         $membershipHeight = $fuzzy->fuzzyfyHeight(0.095);
         $tsukamoto = $fuzzy->rules($membershipLength,$membershipDiameter,$membershipHeight);
-        var_dump($tsukamoto);
-        // var_dump($membershipLength,$membershipDiameter,$membershipHeight);
+        // var_dump($tsukamoto);
     }
 }
 
