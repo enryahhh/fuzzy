@@ -31,8 +31,12 @@ class Fuzzy {
         return $arr;
     }
 
-    public function calculateZ($input,$a,$b){
-        $z = $b-$input*($b-$a);
+    public function calculateZ($input,$a,$b,$type){
+        if($type == "male" || $type == "intersex"){
+            $z = $input-$b*($b-$a);    
+        }else if($type == "female"){
+            $z = $b-$input*($b-$a);
+        }
         return $z;
     }
 
@@ -187,9 +191,9 @@ class Fuzzy {
 
             if ($weights > 0) {
                 if($arrRules[$i]['output']=='female' || $arrRules[$i]['output']=='male'){
-                    $z = $this->calculateZ($weights, 0.3,0.5);
+                    $z = $this->calculateZ($weights, 0.3,0.5,$arrRules[$i]['output']);
                 }else{
-                    $z = $this->calculateZ($weights, 0.5,0.7);
+                    $z = $this->calculateZ($weights, 0.5,0.7,$arrRules[$i]['output']);
                 }
                 $matching_rules[] = array(
                     'rule_index' => $i,
